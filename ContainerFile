@@ -1,0 +1,14 @@
+# Use Red Hat Universal Base Image (UBI) 8 as base image
+FROM registry.access.redhat.com/ubi8/ubi
+
+# Install ProxySQL
+RUN yum install -y proxysql
+
+# Copy the ProxySQL configuration file into the container
+COPY proxysql.cnf /etc/proxysql/proxysql.cnf
+
+# Expose ProxySQL admin port
+EXPOSE 6032
+
+# Start ProxySQL
+CMD ["proxysql", "-f", "-c", "/etc/proxysql/proxysql.cnf"]
