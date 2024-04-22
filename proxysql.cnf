@@ -1,0 +1,40 @@
+# ProxySQL Configuration File
+
+# Admin Variables
+admin_variables=
+{
+    admin_credentials = 'admin:admin_password'
+    mysql_ifaces="0.0.0.0:6032"
+    refresh_interval=2000
+}
+
+# MySQL Monitor Configuration
+mysql-monitor_username = 'monitor'
+mysql-monitor_password = 'monitor_password'
+
+# Hostgroup Definitions
+mysql_servers =
+(
+    { address='read_only_host_1', port=3306, hostgroup=10 },
+    { address='read_only_host_2', port=3306, hostgroup=10 },
+    { address='write_host_1', port=3306, hostgroup=20 },
+    { address='write_host_2', port=3306, hostgroup=20 }
+)
+
+# Hostgroup Configuration
+mysql_query_rules =
+(
+    # Rule to route read-only queries to read-only hosts (hostgroup 10)
+    { rule_id=100,
+      active=1,
+      match_digest='^SELECT',
+      destination_hostgroup=10,
+      apply=1 },
+
+    # Rule to route write queries to write hosts (hostgroup 20)
+    { rule_id=200,
+      active=1,
+      match_digest='^(INSERT|UPDATE|DELETE|REPLACE)',
+      destination_hostgroup=20,
+      apply=1 }
+)
